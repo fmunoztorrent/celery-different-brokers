@@ -1,0 +1,4 @@
+celery==5.2.7
+kombu==5.2.3
+stomp.py==8.1.0
+sqlalchemy

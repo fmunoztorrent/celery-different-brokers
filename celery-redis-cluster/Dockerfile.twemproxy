@@ -1,0 +1,21 @@
+FROM alpine:3.12
+
+RUN apk add --no-cache build-base git automake autoconf libtool
+
+RUN git clone https://github.com/twitter/twemproxy.git /twemproxy && \
+    cd /twemproxy && \
+    autoreconf -fvi && \
+    ./configure && \
+    make && \
+    make install
+
+RUN mkdir -p /etc/nutcracker
+
+COPY ./twemproxy/nutcracker.yml /etc/nutcracker/nutcracker.yml
+COPY ./start-twemproxy.sh /usr/local/bin/start-twemproxy.sh
+
+RUN chmod +x /usr/local/bin/start-twemproxy.sh
+
+EXPOSE 22122
+
+ENTRYPOINT ["/usr/local/bin/start-twemproxy.sh"]

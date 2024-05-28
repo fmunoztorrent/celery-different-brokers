@@ -1,0 +1,15 @@
+alpha:
+  listen: 0.0.0.0:22122
+  hash: fnv1a_64
+  distribution: ketama
+  timeout: 400
+  backlog: 1024
+  preconnect: true
+  redis: true
+  servers:
+    - 172.28.0.2:7000:1
+    - 172.28.0.3:7001:1
+    - 172.28.0.4:7002:1
+    - 172.28.0.5:7003:1
+    - 172.28.0.6:7004:1
+    - 172.28.0.7:7005:1
