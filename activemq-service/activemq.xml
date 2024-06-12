@@ -1,0 +1,35 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:broker="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <broker:broker xmlns:broker="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}">
+        <!-- Configuración de transporte -->
+        <broker:transportConnectors>
+            <broker:transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+            <broker:transportConnector name="stomp" uri="stomp://0.0.0.0:61613"/>
+        </broker:transportConnectors>
+
+        <!-- Creación de la cola -->
+        <broker:destinations>
+            <broker:queue physicalName="default"/>
+        </broker:destinations>
+
+        <!-- Configuración de uso de memoria -->
+        <broker:systemUsage>
+            <broker:systemUsage>
+                <broker:memoryUsage>
+                    <broker:memoryUsage limit="512 mb"/>
+                </broker:memoryUsage>
+                <broker:storeUsage>
+                    <broker:storeUsage limit="1 gb"/>
+                </broker:storeUsage>
+                <broker:tempUsage>
+                    <broker:tempUsage limit="512 mb"/>
+                </broker:tempUsage>
+            </broker:systemUsage>
+        </broker:systemUsage>
+    </broker:broker>
+
+</beans>
