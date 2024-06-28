@@ -2,11 +2,26 @@ version: '3.8'
 
 services:
   activemq:
-    build: .
+    build:
+      context: ./activemq
     ports:
       - "61616:61616"
       - "8161:8161"
       - "61613:61613"
     volumes:
-      - ./activemq.xml:/opt/activemq/conf/activemq.xml
-      - ./log4j.properties:/opt/activemq/conf/log4j.properties
+      - ./activemq/activemq.xml:/opt/activemq/conf/activemq.xml
+      - ./activemq/log4j.properties:/opt/activemq/conf/log4j.properties
+
+  celery_worker:
+    build:
+      context: ./celery
+    command: celery -A tasks worker --loglevel=info
+    environment:
+      - ACTIVEMQ_USERNAME=admin
+      - ACTIVEMQ_PASSWORD=admin
+      - ACTIVEMQ_HOST=activemq
+      - ACTIVEMQ_PORT=61613
+    depends_on:
+      - activemq
+    volumes:
+      - ./celery:/app

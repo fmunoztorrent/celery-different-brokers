@@ -4,10 +4,38 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
-    <amq:broker brokerName="localhost" dataDirectory="${activemq.data}">
+    <amq:broker brokerName="localhost" dataDirectory="/opt/activemq/data" useJmx="true">
+        <amq:systemUsage>
+            <amq:systemUsage>
+                <amq:memoryUsage>
+                    <amq:memoryUsage limit="512 mb"/>  <!-- Ajusta este valor según sea necesario -->
+                </amq:memoryUsage>
+            </amq:systemUsage>
+        </amq:systemUsage>
         <amq:transportConnectors>
             <amq:transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
             <amq:transportConnector name="stomp" uri="stomp://0.0.0.0:61613"/>
+            <amq:transportConnector name="admin" uri="http://0.0.0.0:8161"/>
         </amq:transportConnectors>
+        
+        <!-- Crear la cola 'default' -->
+        <amq:destinations>
+            <amq:queue physicalName="default"/>
+        </amq:destinations>
+        
+        <!-- Configuración del contexto de administración -->
+        <amq:managementContext>
+            <amq:managementContext connectorPort="1099"/>
+        </amq:managementContext>
+        
+        <!-- Configuración de los plugins de autenticación -->
+        <amq:plugins>
+            <amq:simpleAuthenticationPlugin>
+                <amq:users>
+                    <amq:authenticationUser username="admin" password="admin" groups="users,admins"/>
+                </amq:users>
+            </amq:simpleAuthenticationPlugin>
+            <amq:runtimeConfigurationPlugin/>
+        </amq:plugins>
     </amq:broker>
 </beans>

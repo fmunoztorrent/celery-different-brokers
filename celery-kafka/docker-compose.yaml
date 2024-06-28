@@ -8,6 +8,7 @@ services:
       - '2181:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    mem_limit: 512m
 
   kafka:
     image: 'bitnami/kafka:latest'
@@ -18,13 +19,25 @@ services:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+    mem_limit: 1g
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-volumes:
-  zookeeper_data:
-    driver: local
-  kafka_data:
-    driver: local
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery
+    depends_on:
+      - kafka
+    environment:
+      - CELERY_BROKER_URL=confluentkafka://kafka:9092
+      - CELERY_RESULT_BACKEND=rpc://
+    mem_limit: 512m

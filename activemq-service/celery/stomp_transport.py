@@ -54,7 +54,7 @@ class StompChannel(virtual.Channel):
     def has_binding(self, queue, exchange, routing_key):
         return (queue, exchange, routing_key) in self.bindings
 
-    def basic_consume(self, queue, no_ack, callback, consumer_tag, arguments=None, nowait=False):
+    def basic_consume(self, queue, no_ack, callback, consumer_tag, on_cancel=None, arguments=None, nowait=False):
         self.connection._callbacks[queue] = callback
         self.connection.subscribe(destination=f'/queue/{queue}', id=consumer_tag, ack='auto' if no_ack else 'client')
 

@@ -1,0 +1,4 @@
+celery
+stomp.py
+kombu
+sqlalchemy

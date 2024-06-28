@@ -1,0 +1,8 @@
+# Usar la imagen base de ActiveMQ
+FROM rmohr/activemq:latest
+
+# Crear directorio para configuraciones personalizadas
+RUN mkdir -p /opt/activemq/conf
+
+# Copiar el archivo de configuración al contenedor con los permisos correctos
+COPY --chown=activemq:activemq activemq-conf/activemq.xml /opt/activemq/conf/activemq.xml

@@ -6,19 +6,21 @@ networks:
 
 services:
   activemq:
-    image: rmohr/activemq:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.activemq
     hostname: activemq
     container_name: activemq
     ports:
       - "8161:8161"
       - "61613:61613"
+      - "61616:61616"
     networks:
       - mynetwork
     environment:
-      ACTIVEMQ_USERNAME: admin
-      ACTIVEMQ_PASSWORD: admin
-    volumes:
-      - ./activemq-conf/activemq.xml:/opt/activemq/conf/activemq.xml
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_WEBADMIN_PORT: 8161
 
   celery_worker:
     build: .
@@ -28,21 +30,6 @@ services:
       - activemq
     networks:
       - mynetwork
-    environment:
-      - ACTIVEMQ_HOST=activemq
-      - ACTIVEMQ_PORT=61613
-      - ACTIVEMQ_USERNAME=admin
-      - ACTIVEMQ_PASSWORD=admin
-
-  tester:
-    build: .
-    volumes:
-      - .:/app
-    depends_on:
-      - celery_worker
-    networks:
-      - mynetwork
-    command: python test_tasks.py
     environment:
       - ACTIVEMQ_HOST=activemq
       - ACTIVEMQ_PORT=61613

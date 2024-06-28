@@ -1,7 +1,4 @@
-# run_task.py
+from tasks import add
 
-from celery_app import add
-
-# Ejecutar una tarea
 result = add.delay(4, 6)
-print('Task result:', result.get(timeout=10))
+print(f'Task result: {result.get(timeout=10)}')
